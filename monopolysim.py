@@ -64,9 +64,13 @@ newPos = 0
 
 def printBoard(board, numrolls):
     from operator import itemgetter
+    count_list = []
+    for item in board:
+        count_list.append(float(item[1]))
+    total_count = sum(count_list)
     board = sorted(board, key=itemgetter(1), reverse=True)
     for item in board:
-        print item[0], "occurs", item[1], "times with a probability of", item[1]/numrolls * 100
+        print item[0], "occurs", item[1], "times with a probability of", "{0:.2f}%".format(item[1]/total_count * 100)
 
 def chanceCard(chance_card, currentPos):
     if chance_card == "Advance to Go":
