@@ -68,8 +68,9 @@ while counter < 1000000:
         newPos = newPos - 40
     elif myboard[newPos][0] == "Go To Jail":
         myboard[newPos][1] += 1
-        newPos == 10
+        newPos = 10
         counter += 1
+        #print "Go to jail!"
 
     currentPos = newPos
     #print "New position: ", newPos
