@@ -46,8 +46,13 @@ def createBoard():
 def createChance():
     chance_cards = ["Advance to Go", "Advance to Illinois Ave", "Advance to St. Charles Place", "Advance token to nearest utility", "Advance token to nearest railroad", "Bank pays you $50", "Get out of Jail Free", "Go back 3 spaces", "Go to Jail", "Make general repairs", "Pay $15 fine", "Take a trip to Reading Railroad", "Take a walk on the Boardwalk", "You have been elected Chairman", "Your building and loan matures", "You have won crossword"]
     random.shuffle(chance_cards)
-    print chance_cards
+    #print chance_cards
     return chance_cards
+
+def createCommunity():
+    community_chest_cards = ["Advance to Go", "Bank error in your favor", "Doctor's fees", "From sale of stock you get $50", "Get out of Jail Free", "Go to Jail", "Grand Opera Night", "Holiday fund matures", "Income tax refund", "It is your birthday", "Life insurance matures", "Pay hospital fees of $100", "Pay school fees of $150", "Receive $25 consultancy fee", "You are assessed for street repairs", "You have won second prize in a beauty contest", "You inherit $100"]
+    random.shuffle(community_chest_cards)
+    return community_chest_cards
 
 def rollDice():
     roll = random.randint(1, 6) + random.randint(1, 6)
@@ -107,35 +112,53 @@ def chanceCard(chance_card, currentPos):
     else:
         return currentPos
 
+def communityCard(community_chest, currentPos):
+    if community_chest == "Go to Jail":
+        return 10
+
+    elif community_chest == "Advance to Go":
+        return 0
+
+    else:
+        return currentPos
+
 myboard = createBoard()
 chance_cards = createChance()
+community_chest_cards = createCommunity()
 dict([])
-while counter < 100:
-    print "Current position: ", myboard[currentPos][0]
+while counter < 1000000:
+    #print "Current position: ", myboard[currentPos][0]
     diceRoll = rollDice()
-    print "Rolled a ",diceRoll
+    #print "Rolled a ",diceRoll
     newPos = currentPos + diceRoll
     if newPos >= 40:
         newPos = newPos - 40
     elif myboard[newPos][0] == "Chance":
         chance_card = chance_cards.pop(0)
-        print "Chance! ", chance_card
+        #print "Chance! ", chance_card
         tempPos = chanceCard(chance_card, newPos)
         if tempPos != newPos:
             myboard[newPos][1] += 1
-            print "Moved from", myboard[newPos][0], "to", myboard[tempPos][0]
+            #print "Moved from", myboard[newPos][0], "to", myboard[tempPos][0]
             newPos = tempPos
         chance_cards.append(chance_card)
-        print chance_cards
+        #print chance_cards
+    elif myboard[newPos][0] == "Community Chest":
+        community_chest = community_chest_cards.pop(0)
+        tempPos = communityCard(community_chest, newPos)
+        if tempPos != newPos:
+            myboard[newPos][1] += 1
+            newPos = tempPos
+        community_chest_cards.append(community_chest)
 
     elif myboard[newPos][0] == "Go To Jail":
         myboard[newPos][1] += 1
         newPos = 10
         counter += 1
-        print "Go to jail!"
+        #print "Go to jail!"
 
     currentPos = newPos
-    print "New position: ", myboard[newPos][0]
+    #print "New position: ", myboard[newPos][0]
 
     myboard[currentPos][1] += 1
     counter += 1
