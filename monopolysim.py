@@ -1,4 +1,7 @@
 import random
+import matplotlib.pyplot as plt
+import numpy as np
+from operator import itemgetter
 
 def createBoard():
    board = [["Go", 0]]
@@ -63,7 +66,6 @@ currentPos = 0
 newPos = 0
 
 def printBoard(board, numrolls):
-    from operator import itemgetter
     count_list = []
     for item in board:
         count_list.append(float(item[1]))
@@ -116,6 +118,21 @@ def chanceCard(chance_card, currentPos):
     else:
         return currentPos
 
+def plotData(board):
+    board = sorted(board, key=itemgetter(1), reverse=True)
+    name_list = []
+    data = []
+    for item in board:
+        name_list.append(item[0])
+        data.append(item[1])
+
+    print name_list, data
+    name_length = np.arange(len(name_list))
+
+    plt.barh(name_length, data, align="center")
+    plt.yticks(name_length, name_list)
+    plt.show()
+
 def communityCard(community_chest, currentPos):
     if community_chest == "Go to Jail":
         return 10
@@ -167,3 +184,4 @@ while counter < 1000000:
     myboard[currentPos][1] += 1
     counter += 1
 printBoard(myboard, counter)
+plotData(myboard)
