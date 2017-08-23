@@ -43,6 +43,12 @@ def createBoard():
    board.append(["Boardwalk", 0])
    return board
 
+def createChance():
+    chance_cards = ["Advance to Go", "Advance to Illinois Ave", "Advance to St. Charles Place", "Advance token to nearest utility", "Advance token to nearest railroad", "Bank pays you $50", "Get out of Jail Free", "Go back 3 spaces", "Go to Jail", "Make general repairs", "Pay $15 fine", "Take a trip to Reading Railroad", "Take a walk on the Boardwalk", "You have been elected Chairman", "Your building and loan matures", "You have won crossword"]
+    random.shuffle(chance_cards)
+    print chance_cards
+    return chance_cards
+
 def rollDice():
     roll = random.randint(1, 6) + random.randint(1, 6)
     return roll
@@ -57,23 +63,79 @@ def printBoard(board, numrolls):
     for item in board:
         print item[0], "occurs", item[1], "times with a probability of", item[1]/numrolls * 100
 
+def chanceCard(chance_card, currentPos):
+    if chance_card == "Advance to Go":
+        return 0
+
+    elif chance_card == "Advance to Illinois Ave":
+        return 24
+
+    elif chance_card == "Advance to St. Charles Place":
+        return 11
+
+    elif chance_card == "Advance token to nearest utility":
+        if currentPos > 12 and currentPos <= 28:
+            return 28
+        else:
+            return 12
+
+    elif chance_card == "Advance token to nearest railroad":
+        if currentPos > 35 or currentPos <= 5:
+            return 5
+        elif currentPos > 5 and currentPos <= 15:
+            return 15
+        elif currentPos > 15 and currentPos <= 25:
+            return 25
+        elif currentPos > 25 and currentPos <= 35:
+            return 35
+
+    elif chance_card == "Go back 3 spaces":
+        if currentPos < 3:
+            return currentPos + 40 - 3
+        else:
+            return currentPos - 3
+
+    elif chance_card == "Go to jail":
+        return 10
+
+    elif chance_card == "Take a trip to Reading Railroad":
+        return 5
+
+    elif chance_card == "Take a walk on the Boardwalk":
+        return 39
+
+    else:
+        return currentPos
+
 myboard = createBoard()
+chance_cards = createChance()
 dict([])
-while counter < 1000000:
-    #print "Current position: ", currentPos
+while counter < 100:
+    print "Current position: ", myboard[currentPos][0]
     diceRoll = rollDice()
-    #print "Rolled a ",diceRoll
+    print "Rolled a ",diceRoll
     newPos = currentPos + diceRoll
     if newPos >= 40:
         newPos = newPos - 40
+    elif myboard[newPos][0] == "Chance":
+        chance_card = chance_cards.pop(0)
+        print "Chance! ", chance_card
+        tempPos = chanceCard(chance_card, newPos)
+        if tempPos != newPos:
+            myboard[newPos][1] += 1
+            print "Moved from", myboard[newPos][0], "to", myboard[tempPos][0]
+            newPos = tempPos
+        chance_cards.append(chance_card)
+        print chance_cards
+
     elif myboard[newPos][0] == "Go To Jail":
         myboard[newPos][1] += 1
         newPos = 10
         counter += 1
-        #print "Go to jail!"
+        print "Go to jail!"
 
     currentPos = newPos
-    #print "New position: ", newPos
+    print "New position: ", myboard[newPos][0]
 
     myboard[currentPos][1] += 1
     counter += 1
